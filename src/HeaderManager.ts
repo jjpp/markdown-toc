@@ -27,6 +27,9 @@ export class HeaderManager {
     public getHeaderList() {
         let headerList: Header[] = [];
         let editor = window.activeTextEditor;
+        
+        let depthFrom = this.configManager.options.DEPTH_FROM.value;
+        let depthTo = this.configManager.options.DEPTH_TO.value;
 
         if (editor != undefined) {
             let doc = editor.document;
@@ -44,10 +47,10 @@ export class HeaderManager {
 
                 if (header.isHeader) {
                     header.orderArray = this.calculateHeaderOrder(header, headerList);
-                    header.orderedListString = header.orderArray.join('.') + ".";
+                    header.orderedListString = header.orderArray.slice(depthFrom).join('.') + ".";
                     header.range = new Range(index, 0, index, lineText.length);
 
-                    if (header.depth <= this.configManager.options.DEPTH_TO.value) {
+                    if (header.depth <= depthTo && header.depth >= depthFrom) {
                         headerList.push(header);
                     }
                 }
